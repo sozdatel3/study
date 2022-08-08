@@ -9,7 +9,7 @@ size_t strlcat (char *dst, const char *src, size_t size) {
     count++;
 }
 for (int q=0;q<size;q++){
-    dst[count+q]=src[i];
+    dst[count+q]=src[q];
 }
     for (int i=count;;i++){
     if (dst[i]==0){
