@@ -23,10 +23,10 @@ int ft_strncmp( const char * string1, const char * string2, size_t num ){
 }
 
 int main(){
-  const char b= 'Irik pidr';
-  const char m=  'Irik ne pidr';
+  const char b='12';
+  const char m='13';
 const char * y=&b;
 const char * n=&m;
-int h=ft_strncmp(y,n,6);
+int h=ft_strncmp(y,n,1);
 printf("%d",h);
 }
