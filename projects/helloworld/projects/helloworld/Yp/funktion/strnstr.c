@@ -7,7 +7,7 @@ char* ss2 = (char*)s2;
 int k = 0;
 int size2 = strlen(ss2);
 char* ptr=NULL;
-if (s2==0){
+if (s2[0]==0){
     return (char*)s1;
 }
 
