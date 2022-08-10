@@ -12,11 +12,14 @@ if (s2[0]==0){
 }
 
 for(int i=0;i<len;i++){
+    int stopfor=0;
+    if (stopfor==1) {break;}
     for(int k=0;k<size2;k++){
     if (ss1[i+k]==ss2[k]){
         n++;
         if (n==size2-1){
             ptr=&ss1[i];
+            stopfor=1;
             break;
         }
     }
