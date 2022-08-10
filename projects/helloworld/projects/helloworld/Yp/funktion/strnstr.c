@@ -14,7 +14,7 @@ if (s2==0){
 for(int i=0;i<len;i++){
 if (ss1[i]==ss2[k]){
     k++;
-    if (k==size2){
+    if (k==size2-1){
         ptr=&ss1[i-k];
         break;
     }  
