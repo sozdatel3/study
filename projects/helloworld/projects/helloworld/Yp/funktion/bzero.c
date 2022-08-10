@@ -6,3 +6,11 @@ void bzero(void * s , size_t  n ){
         p[i]=0;
     }
 }
+
+int main(){
+    char Yar[20]="Yaril petyx";
+void* Ya=&Yar;
+bzero(Ya,8);
+printf ("%s",Yar);
+return 0;
+}
