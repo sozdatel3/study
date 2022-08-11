@@ -30,10 +30,19 @@ for(int i=0;i<len;i++){
 return ptr;
 }
 
+<<<<<<< HEAD
 const char Y[20]="lllloxjhjh";
 const char L[5]="z";
+=======
+const char Y[20]="llllox";
+const char L[5]="i";
+>>>>>>> f8bfee094b964445c1a1150cc420677ecf371063
 int main(){
 ft_strnstr(Y,L,20);
 printf("%p",ft_strnstr(Y,L,20));
 return 0;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> f8bfee094b964445c1a1150cc420677ecf371063
