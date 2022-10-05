@@ -22,9 +22,14 @@ void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int
 
 int chek_neigbros(int ** cells, int row, int colon) {
     int counter_neigbros;
-    for (int i = 0; i < 3; i++) {
-        for( int j = 0; j < 3; j++) {
-            //if()
+    for (int i = row - 1; i <= row + 1; i++) {
+        for( int j = colon - 1; j <= colon + 1; j++) {
+            if(i - 1 < 0) {
+                i++;
+            }
+            if(j - 1 < 0) {
+                j++;
+            }
             if (cells[row - 1 + i][colon - 1 + j]) {
               counter_neigbros++;
             }
@@ -60,5 +65,29 @@ return 0;
 int main() {
     int row, colon;
     int* rowptr, *colonptr;
-
+    printf("Enter number of row and colon");
+    scanf("%d%d", &row, &colon);
+    int ** cells;
+    cells = (int **) calloc(row, sizeof(int*));
+    if (cells == NULL) {
+        printf("Allocate memory eror");
+        exit(1);
+    }
+    for (int i = 0; i < row; i++) {
+        cells[i] = (int *) calloc(colon, sizeof(int));
+    if (cells[i] == NULL) {
+        printf("Allocate memory eror");
+        exit(1);
+    }
+    }
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < colon; j++) {
+            scanf("%d", &cells[i][j]);
+        }
+    }
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < colon; j++) {
+            printf("%d", cells[i][j]);
+        }
+    }
 }
