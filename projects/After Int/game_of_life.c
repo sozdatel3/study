@@ -2,11 +2,10 @@
 #include <stdlib.h>
 
 char *htmlize (int **, int, int);
-void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int* new_colon);
+void swap(int ** cells, int ** new_cells, int * rowptr, int* colonptr);
 int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr);
 int killer(int ** cells, int row, int colon, int * rowptr, int * colonptr);
-void chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
-int * rigth_board_live, int * botton_board_live, int * left_board_live);
+int chek_border(int ** new_cells, int *rowptr, int * colonptr);
 void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * colonptr);
 int ** allocate_new_cells(int row, int colon);
 int **get_generation (int **cells, int generations, int *rowptr, int *colptr)
@@ -19,8 +18,12 @@ int **get_generation (int **cells, int generations, int *rowptr, int *colptr)
   // наилучшая практика, чтобы сохранить вашу функцию чистой.
 }
 
-void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int* new_colon) {
-    
+void swap(int ** cells, int ** new_cells, int * rowptr, int * colonptr) {
+    int up_board = 0, left_board = 0, right_board = 0, botton_board = 0;
+    int * up_board_live = &up_board,
+    *right_board_live = &right_board,
+    *botton_board_live = &botton_board,
+    *left_board_live = &left_board;
 }
 
 int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr) {
@@ -57,37 +60,37 @@ void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * 
     }
 }
 
-void chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
-int * rigth_board_live, int * botton_board_live, int * left_board_live) {  
+int chek_border(int ** new_cells, int *rowptr, int * colonptr ) {  
 // We always know, that new_cells bigger in row and coll by 2.
-    int row_new = *rowptr + 2;
+    int row_new = *rowptr + 2, count_board = 0;
     int colon_new = *colonptr + 2;
     int* new_row_ptr = &row_new;
     int* new_colon_ptr = &colon_new;
     for (int j = 0; j < *new_colon_ptr; j++) {
         if (killer(new_cells, 0, j, new_row_ptr, new_colon_ptr)) {
-            *up_board_live = 1;
-            break;
+            count_board = 1;
+            return count_board;
         }
     }
     for (int i = 0; i < *new_row_ptr; i++) {
         if (killer(new_cells, i, (*new_row_ptr - 1), new_row_ptr, new_colon_ptr)) {
-            *rigth_board_live = 1;
-            break;
+            count_board = 1;
+            return count_board;
         }
     }
     for (int j = 0; j < *new_colon_ptr; j++) {
         if (killer(new_cells, (*new_row_ptr - 1), j, new_row_ptr, new_colon_ptr)) {
-            *botton_board_live = 1;
-            break;
+            count_board = 1;
+            return count_board;
         }
     }
     for (int i = 0; i < *new_row_ptr; i++) {
         if (killer(new_cells, i, 0, new_row_ptr, new_colon_ptr)) {
-            *left_board_live = 1;
-            break;
+            count_board = 1;
+            return count_board;
         }
     }
+    return 0;
 }
 
 int ** allocate_new_cells(int row, int colon) {
@@ -126,11 +129,6 @@ void scan_cells(int ** cells , int row, int colon) {
 int main() {
     int row, colon;
     int* rowptr, *colonptr;
-    int up_board = 0, left_board = 0, right_board = 0, botton_board = 0;
-    int * up_board_live = &up_board,
-    *right_board_live = &right_board,
-    *botton_board_live = &botton_board,
-    *left_board_live = &left_board;
     printf("Enter number of row and colon :\n");
     scanf("%d%d", &row, &colon);
     int ** cells = allocate_new_cells(row, colon);
@@ -140,6 +138,7 @@ int main() {
     int ** bigger_cells = allocate_new_cells(row + 2, colon + 2);
     copy_small_in_big(cells, bigger_cells, rowptr, colonptr);
     print_cells(bigger_cells, row + 2, colon + 2);
-    chek_border(bigger_cells, rowptr, colonptr, up_board_live, right_board_live, botton_board_live, left_board_live);
-    printf("up %d \n rigth %d \n botton %d \n left %d \n", *up_board_live, *right_board_live, *botton_board_live, *left_board_live);
+    chek_border(bigger_cells, rowptr, colonptr);
+    printf("%d", chek_border(bigger_cells, rowptr, colonptr));
+    //printf("up %d \n rigth %d \n botton %d \n left %d \n", *up_board_live, *right_board_live, *botton_board_live, *left_board_live);
 }
