@@ -112,6 +112,10 @@ void free_cells(int ** cells, int row) {
     }
     free(cells);
 }
+void recalloc2_function(int ** cells, int row, int colon) {
+    free_cells(cells, row);
+    cells = allocate_new_cells(row + 2, colon + 2);
+}
 void print_cells(int ** cells, int row, int colon) {
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < colon; j++) {
@@ -142,8 +146,7 @@ int main() {
     int ** bigger_cells = allocate_new_cells(row + 2, colon + 2);
     copy_small_in_big(cells, bigger_cells, rowptr, colonptr);
     print_cells(bigger_cells, row + 2, colon + 2);
-    free_cells(cells, row);
-    cells = allocate_new_cells(row + 2, colon +2);
+    recalloc2_function(cells, row, colon);
     print_cells(cells, row + 2, colon + 2);
     chek_border(bigger_cells, rowptr, colonptr);
     printf("%d", chek_border(bigger_cells, rowptr, colonptr));
