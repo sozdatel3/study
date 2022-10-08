@@ -5,7 +5,7 @@ char *htmlize (int **, int, int);
 void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int* new_colon);
 int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr);
 int killer(int ** cells, int row, int colon, int * rowptr, int * colonptr);
-int chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
+void chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
 int * rigth_board_live, int * botton_board_live, int * left_board_live);
 void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * colonptr);
 int ** allocate_new_cells(int row, int colon);
@@ -57,7 +57,7 @@ void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * 
     }
 }
 
-int chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
+void chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
 int * rigth_board_live, int * botton_board_live, int * left_board_live) {  
 // We always know, that new_cells bigger in row and coll by 2.
     int row_new = *rowptr + 2;
@@ -126,6 +126,11 @@ void scan_cells(int ** cells , int row, int colon) {
 int main() {
     int row, colon;
     int* rowptr, *colonptr;
+    int up_board = 0, left_board = 0, right_board = 0, botton_board = 0;
+    int * up_board_live = &up_board,
+    *right_board_live = &right_board,
+    *botton_board_live = &botton_board,
+    *left_board_live = &left_board;
     printf("Enter number of row and colon :\n");
     scanf("%d%d", &row, &colon);
     int ** cells = allocate_new_cells(row, colon);
@@ -135,4 +140,6 @@ int main() {
     int ** bigger_cells = allocate_new_cells(row + 2, colon + 2);
     copy_small_in_big(cells, bigger_cells, rowptr, colonptr);
     print_cells(bigger_cells, row + 2, colon + 2);
+    chek_border(bigger_cells, rowptr, colonptr, up_board_live, right_board_live, botton_board_live, left_board_live);
+    printf("up %d \n rigth %d \n botton %d \n left %d \n", *up_board_live, *right_board_live, *botton_board_live, *left_board_live);
 }
