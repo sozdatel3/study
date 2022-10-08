@@ -3,8 +3,8 @@
 
 char *htmlize (int **, int, int);
 void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int* new_colon);
-int chek_neigbros(int ** cells, int row, int colon);
-int killer(int ** cells, int row, int colon);
+int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr);
+int killer(int ** cells, int row, int colon, int * rowptr, int * colonptr);
 int chek_border(int ** cells, int ** new_cells, int *rowptr, int * colonptr);
 int **get_generation (int **cells, int generations, int *rowptr, int *colptr)
 {
@@ -20,27 +20,31 @@ void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int
     
 }
 
-int chek_neigbros(int ** cells, int row, int colon) {
-    int counter_neigbros;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for( int j = colon - 1; j <= colon + 1; j++) {
-            if(i - 1 < 0) {
+int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr) {
+    int counter_neigbros = 0;
+    int flag = 0;
+    for (int i = row - 1; (i <= row + 1) && (i <= *rowptr - 1); i++) {
+        for (int j = colon - 1; j <= colon + 1; j++) {
+            if (i < 0) {
                 i++;
             }
-            if(j - 1 < 0) {
+            if (j < 0) {
                 j++;
             }
-            if (cells[row - 1 + i][colon - 1 + j]) {
-              counter_neigbros++;
+            if ((cells[i][j]) && ((i != row) || (j != colon))) {
+                counter_neigbros++;
+            }
+            if ((j == colon) && (j + 1 > *colonptr)) {
+                j+=2;
             }
         }
     }
+    printf("\n %d END\n", counter_neigbros);
     return counter_neigbros;
 }
-
-int killer(int ** cells, int row, int colon) {
-    if ((!(cells[row][colon])) && ( chek_neigbros(cells, row, colon) == 3)) return 1;
-    if (((cells[row][colon])) && (( chek_neigbros(cells, row, colon) == 3) || (chek_neigbros(cells, row, colon) == 2))) return 1;
+int killer(int ** cells, int row, int colon,int * rowptr, int * colonptr) {
+    if ((!(cells[row][colon])) && ( chek_neigbros(cells, row, colon, rowptr, colonptr) == 3)) return 1;
+    if (((cells[row][colon])) && (( chek_neigbros(cells, row, colon, rowptr, colonptr) == 3) || (chek_neigbros(cells, row, colon, rowptr, colonptr) == 2))) return 1;
     return 0;
 }
 
@@ -65,9 +69,11 @@ return 0;
 int main() {
     int row, colon;
     int* rowptr, *colonptr;
-    printf("Enter number of row and colon");
+    printf("Enter number of row and colon :\n");
     scanf("%d%d", &row, &colon);
     int ** cells;
+    rowptr = &row;
+    colonptr =&colon;
     cells = (int **) calloc(row, sizeof(int*));
     if (cells == NULL) {
         printf("Allocate memory eror");
@@ -87,7 +93,16 @@ int main() {
     }
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < colon; j++) {
-            printf("%d", cells[i][j]);
+            if (j == colon - 1) {
+                printf("%d\n", cells[i][j]);
+            } else {
+                printf("%d ", cells[i][j]);
+            }
         }
     }
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < colon; j++) {
+            printf("\n%d", killer(cells, i, j, rowptr, colonptr));
+        }
+    }   
 }
