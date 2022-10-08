@@ -5,7 +5,9 @@ char *htmlize (int **, int, int);
 void swap(int ** cells, int ** new_cells, int row, int colon, int * new_row, int* new_colon);
 int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr);
 int killer(int ** cells, int row, int colon, int * rowptr, int * colonptr);
-int chek_border(int ** cells, int ** new_cells, int *rowptr, int * colonptr);
+int chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
+int * rigth_board_live, int * botton_board_live, int * left_board_live);
+void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * colonptr);
 int **get_generation (int **cells, int generations, int *rowptr, int *colptr)
 {
   // Your code here
@@ -39,7 +41,6 @@ int chek_neigbros(int ** cells, int row, int colon, int * rowptr, int * colonptr
             }
         }
     }
-    printf("\n %d END\n", counter_neigbros);
     return counter_neigbros;
 }
 int killer(int ** cells, int row, int colon,int * rowptr, int * colonptr) {
@@ -47,34 +48,71 @@ int killer(int ** cells, int row, int colon,int * rowptr, int * colonptr) {
     if (((cells[row][colon])) && (( chek_neigbros(cells, row, colon, rowptr, colonptr) == 3) || (chek_neigbros(cells, row, colon, rowptr, colonptr) == 2))) return 1;
     return 0;
 }
-
-int chek_border(int ** cells, int ** new_cells, int *rowptr, int * colonptr) {  
-// We always know, that new_cells bigger in row and coll by 1.
-int counter_live_borded = 0;
-for (int i = 0; i < *colonptr + 1; i++) {
-    if (new_cells[0][i]) {
-        counter_live_borded++;
-        return counter_live_borded;
+void copy_small_in_big (int ** cells, int ** bigger_cells , int * rowptr, int * colonptr) {
+    for (int i = 1; i < *rowptr + 2; i++) {
+        for (int j = 1; j < *colonptr + 2; j++) {
+            bigger_cells[i][j] = cells[i][j];
+        }
     }
 }
-for (int i = 0; i < *rowptr + 1; i++) {
-    if (new_cells[i][*colonptr+1]) {
-        counter_live_borded++;
-        return counter_live_borded;
+
+int chek_border(int ** new_cells, int *rowptr, int * colonptr, int * up_board_live,
+int * rigth_board_live, int * botton_board_live, int * left_board_live) {  
+// We always know, that new_cells bigger in row and coll by 2.
+    int row_new = *rowptr + 2;
+    int colon_new = *colonptr + 2;
+    int* new_row_ptr = &row_new;
+    int* new_colon_ptr = &colon_new;
+    for (int j = 0; j < *new_colon_ptr; j++) {
+        if (killer(new_cells, 0, j, new_row_ptr, new_colon_ptr)) {
+            *up_board_live = 1;
+            break;
+        }
+    }
+    for (int i = 0; i < *new_row_ptr; i++) {
+        if (killer(new_cells, i, (*new_row_ptr - 1), new_row_ptr, new_colon_ptr)) {
+            *rigth_board_live = 1;
+            break;
+        }
+    }
+    for (int j = 0; j < *new_colon_ptr; j++) {
+        if (killer(new_cells, (*new_row_ptr - 1), j, new_row_ptr, new_colon_ptr)) {
+            *botton_board_live = 1;
+            break;
+        }
+    }
+    for (int i = 0; i < *new_row_ptr; i++) {
+        if (killer(new_cells, i, 0, new_row_ptr, new_colon_ptr)) {
+            *left_board_live = 1;
+            break;
+        }
     }
 }
-return 0;
-}
 
+int ** allocate_new_cells(int row, int colon) {
+    int ** new_cells = (int **) calloc(row, sizeof(int*));
+    if (new_cells == NULL) {
+        printf("Allocate memory eror");
+        exit(1);
+    }
+    for (int i = 0; i < row; i++) {
+        new_cells[i] = (int *) calloc(colon, sizeof(int));
+    if (new_cells[i] == NULL) {
+        printf("Allocate memory eror");
+        exit(1);
+    }
+    }
+    return new_cells;
+}
 int main() {
     int row, colon;
     int* rowptr, *colonptr;
     printf("Enter number of row and colon :\n");
     scanf("%d%d", &row, &colon);
-    int ** cells;
+    int ** cells = allocate_new_cells(row, colon);
     rowptr = &row;
     colonptr =&colon;
-    cells = (int **) calloc(row, sizeof(int*));
+    /*cells = (int **) calloc(row, sizeof(int*));
     if (cells == NULL) {
         printf("Allocate memory eror");
         exit(1);
@@ -85,7 +123,7 @@ int main() {
         printf("Allocate memory eror");
         exit(1);
     }
-    }
+    }*/
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < colon; j++) {
             scanf("%d", &cells[i][j]);
